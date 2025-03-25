@@ -28,15 +28,25 @@ exports.participate = async (req, res) => {
       return res.status(404).json({ error: `Category with ID ${category_id} not found for marathon ${marathon_id}` });
     }
 
+    // Check if user is already participating
     const existing = await pool.query(
-      'SELECT 1 FROM participations WHERE marathon_id = $1 AND user_id = $2',
+      'SELECT * FROM participations WHERE marathon_id = $1 AND user_id = $2',
       [marathon_id, user_id]
     );
+
+    let participation;
     if (existing.rows.length > 0) {
-      return res.status(409).json({ error: 'Participation is already marked for this marathon' });
+      // Update existing participation to switch category
+      const result = await pool.query(
+        'UPDATE participations SET category_id = $1, registered_at = CURRENT_TIMESTAMP WHERE marathon_id = $2 AND user_id = $3 RETURNING *',
+        [category_id, marathon_id, user_id]
+      );
+      participation = result.rows[0];
+    } else {
+      // Create new participation
+      participation = await Participation.create({ marathon_id, user_id, category_id });
     }
 
-    const participation = await Participation.create({ marathon_id, user_id, category_id });
     res.status(201).json({
       id: participation.id,
       marathon_id,
@@ -51,9 +61,9 @@ exports.participate = async (req, res) => {
       return res.status(400).json({ error: 'Invalid marathon_id or category_id' });
     }
     if (error.code === '23505' && error.constraint === 'unique_user_marathon') {
-      return res.status(409).json({ error: 'Participation is already marked for this marathon' });
+      return res.status(409).json({ error: 'Unexpected duplicate participation' });
     }
-    console.error('Error creating participation:', error);
+    console.error('Error creating or updating participation:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 };

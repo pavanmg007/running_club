@@ -1,0 +1,16 @@
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #fff3e0;
+  font-family: 'Open Sans', sans-serif;
+  color: #212121;
+}
+
+.hero-gradient {
+  background: linear-gradient(135deg, #2e7d32 0%, #f57c00 100%);
+  clip-path: polygon(0 0, 100% 0, 100% 80%, 0 100%);
+}
+
+.card-gradient {
+  background: linear-gradient(45deg, #2e7d32 0%, #f57c00 50%);
+}

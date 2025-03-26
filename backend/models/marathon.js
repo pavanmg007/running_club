@@ -18,6 +18,12 @@ class Marathon {
     return rows[0];
   }
 
+  static async findMarathonCategories(marathon_id) {
+    const query = 'SELECT * FROM categories WHERE marathon_id = $1;';
+    const { rows } = await pool.query(query, [marathon_id]);
+    return rows;
+  }
+
   static async findAllByClubId(club_id) {
     console.log('findAllByClubId query with club_id:', club_id);
     const query = `

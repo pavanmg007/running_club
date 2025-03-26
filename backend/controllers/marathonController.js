@@ -27,6 +27,25 @@ exports.getAllMarathons = async (req, res) => {
   }
 };
 
+exports.getMarathonById = async (req, res) => {
+  const marathonId = req.params.id;
+  try {
+    const marathon = await Marathon.findById(marathonId);
+    if (!marathon) {
+      return res.status(404).json({ error: `Marathon with ID ${marathonId} not found` });
+    }
+    const marathonCategories = await Marathon.findMarathonCategories(marathonId);
+    if (marathonCategories.length > 0) {
+      marathon.categories = marathonCategories;
+    }
+    res.json(marathon);
+  }
+  catch (error) {
+    console.error('Error fetching marathon:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
+
 exports.createMarathon = async (req, res) => {
   const { name, date, location, registration_link, categories, is_private } = req.body;
   const club_id = req.user.club_id;
@@ -80,7 +99,7 @@ exports.getMarathonParticipants = async (req, res) => {
   }
   
   const query = `
-    SELECT m.id as "marathonId", m.name, u.id as "userId", u.name as "userName", c.name as category
+    SELECT m.id as "marathonId", m.name, u.id as "userId", u.name as "userName", c.id as "categoryId", c.name as category
     FROM participations p
     JOIN users u ON p.user_id = u.id
     JOIN categories c ON p.category_id = c.id
@@ -100,7 +119,12 @@ exports.getMarathonParticipants = async (req, res) => {
     res.json({
       marathonId: parseInt(marathonId),
       name: rows[0].name,
-      allParticipants: rows.map(row => ({ userId: row.userId, name: row.userName, category: row.category })),
+      allParticipants: rows.map(row => ({
+        userId: row.userId,
+        name: row.userName,
+        categoryId: row.categoryId,
+        category: row.category,
+      })),
       participantsByCategory
     });
   } catch (error) {

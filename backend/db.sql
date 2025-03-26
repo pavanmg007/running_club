@@ -27,6 +27,16 @@ CREATE TABLE invitations (
   CONSTRAINT fk_invitations_club FOREIGN KEY (club_id) REFERENCES clubs(id)
 );
 
+CREATE TABLE password_resets (
+  id SERIAL PRIMARY KEY,
+  user_id INTEGER NOT NULL,
+  token VARCHAR(255) UNIQUE NOT NULL,
+  expires_at TIMESTAMP NOT NULL,
+  used BOOLEAN DEFAULT false,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT fk_password_resets_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
 CREATE TABLE marathons (
   id SERIAL PRIMARY KEY,
   club_id INTEGER NOT NULL,

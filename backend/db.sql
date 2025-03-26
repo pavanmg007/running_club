@@ -70,16 +70,11 @@ CREATE TABLE participations (
 );
 
 -- Initial data for two clubs as an example
-INSERT INTO clubs (name) VALUES ('Your Running Club');
-INSERT INTO clubs (name) VALUES ('City Runners');
+INSERT INTO clubs (name) VALUES ('RunaRanga');
 
 -- Admin for Club 1 (password: "admin123")
 INSERT INTO users (club_id, name, email, password, role) 
 VALUES (1, 'Admin1', 'admin1@club1.com', '$2b$10$TBd.4uaAuW7qZmRzZcCWk.iwGW8L1btAWjvQCmr.BsHVhtwg47HoC', 'admin');
-
--- Admin for Club 2 (password: "admin123")
-INSERT INTO users (club_id, name, email, password, role) 
-VALUES (2, 'Admin2', 'admin2@club2.com', '$2b$10$TBd.4uaAuW7qZmRzZcCWk.iwGW8L1btAWjvQCmr.BsHVhtwg47HoC', 'admin');
 
 COMMIT;
 

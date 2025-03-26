@@ -10,7 +10,7 @@ const app = express();
 app.use(express.json());
 // Enable CORS for frontend origin
 app.use(cors({
-  origin: 'https://https://frontend-polished-thunder-9282.fly.dev', // Allow only this origin
+  origin: 'https://frontend-polished-thunder-9282.fly.dev', // Allow only this origin
   credentials: true, // If you plan to use cookies (optional)
   allowedHeaders: ['Content-Type', 'Authorization'], // Allow headers
 }));

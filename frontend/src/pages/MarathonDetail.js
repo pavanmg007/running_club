@@ -7,10 +7,6 @@ import {
     Box,
     Card,
     CardContent,
-    List,
-    ListItem,
-    ListItemText,
-    Divider,
     Chip,
     Button,
     Link,
@@ -285,7 +281,7 @@ const MarathonDetail = () => {
                                             <TableCell sx={{ fontFamily: 'Poppins', fontWeight: 600, color: '#F57C00' }}>
                                                 Category
                                             </TableCell>
-                                            <TableCell sx={{ fontFamily: 'Poppins', fontWeight: 600, color: '#F57C00' }}>
+                                            <TableCell sx={{ fontFamily: 'Poppins', fontWeight: 600, color: '#F57C00', width: '50%' }}>
                                                 Price
                                             </TableCell>
                                         </TableRow>
@@ -305,15 +301,33 @@ const MarathonDetail = () => {
                                 </Table>
                             </TableContainer>
                         ) : (
-                            <Typography align="center" color="text.secondary">
-                                No categories available
-                            </Typography>
+                            <TableContainer component={Paper} sx={{ borderRadius: 3, boxShadow: '0 8px 24px rgba(0,0,0,0.1)' }}>
+                                <Table>
+                                    <TableHead>
+                                        <TableRow>
+                                            <TableCell sx={{ fontFamily: 'Poppins', fontWeight: 600, color: '#F57C00' }}>
+                                                Category
+                                            </TableCell>
+                                            <TableCell sx={{ fontFamily: 'Poppins', fontWeight: 600, color: '#F57C00', width: '50%' }}>
+                                                Price
+                                            </TableCell>
+                                        </TableRow>
+                                    </TableHead>
+                                    <TableBody>
+                                        <TableRow>
+                                            <TableCell sx={{ fontFamily: 'Open Sans', color: '#2E7D32' }}>
+                                                No categories available
+                                            </TableCell>
+                                        </TableRow>
+                                    </TableBody>
+                                </Table>
+                            </TableContainer>
                         )}
                     </Box>
                 </motion.div>
 
                 {/* Sticky Marathon Info & Categories */}
-                {!timeRemaining.isPast ? ( // Hide "Join the Race" section if race has ended
+                {!timeRemaining.isPast ? (
                     <motion.div
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
@@ -428,44 +442,72 @@ const MarathonDetail = () => {
                 )}
 
                 {/* Participants Section */}
-                <Box sx={{ maxWidth: 800, mx: 'auto' }}>
-                    <Typography
-                        variant="h5"
-                        align="center"
-                        gutterBottom
-                        sx={{ color: '#2E7D32', fontFamily: 'Poppins', mb: 4 }}
-                    >
-                        {timeRemaining.isPast ? 'Participated Runners' : 'Participating Runners'}
-                    </Typography>
-                    <List sx={{ bgcolor: 'white', borderRadius: 3, boxShadow: '0 8px 24px rgba(0,0,0,0.1)' }}>
+                <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 1 }}
+                >
+                    <Box sx={{ maxWidth: 800, mx: 'auto', mb: 4 }}>
+                        <Typography
+                            variant="h5"
+                            align="center"
+                            gutterBottom
+                            sx={{ color: '#2E7D32', fontFamily: 'Poppins', mb: 3 }}
+                        >
+                            {timeRemaining.isPast ? 'Participated Runners' : 'Participating Runners'}
+                        </Typography>
                         {participants.length > 0 ? (
-                            participants.map((participant, index) => (
-                                <motion.div
-                                    key={participant.userId}
-                                    initial={{ opacity: 0, y: 20 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    transition={{ duration: 0.5, delay: index * 0.1 }}
-                                >
-                                    <ListItem sx={{ py: 2 }}>
-                                        <ListItemText
-                                            primary={participant.name}
-                                            secondary={`Category: ${participant.category}`}
-                                            primaryTypographyProps={{ fontFamily: 'Poppins', fontWeight: 600 }}
-                                            secondaryTypographyProps={{ fontFamily: 'Open Sans', color: '#F57C00' }}
-                                        />
-                                    </ListItem>
-                                    {index < participants.length - 1 && (
-                                        <Divider sx={{ bgcolor: '#F57C00', opacity: 0.2 }} />
-                                    )}
-                                </motion.div>
-                            ))
+                            <TableContainer component={Paper} sx={{ borderRadius: 3, boxShadow: '0 8px 24px rgba(0,0,0,0.1)' }}>
+                                <Table>
+                                    <TableHead>
+                                        <TableRow>
+                                            <TableCell sx={{ fontFamily: 'Poppins', fontWeight: 600, color: '#F57C00' }}>
+                                                Name
+                                            </TableCell>
+                                            <TableCell sx={{ fontFamily: 'Poppins', fontWeight: 600, color: '#F57C00', width: '50%' }}>
+                                                Category
+                                            </TableCell>
+                                        </TableRow>
+                                    </TableHead>
+                                    <TableBody>
+                                        {participants.map((participant) => (
+                                            <TableRow key={participant.userId}>
+                                                <TableCell sx={{ fontFamily: 'Open Sans', color: '#2E7D32' }}>
+                                                    {participant.name}
+                                                </TableCell>
+                                                <TableCell sx={{ fontFamily: 'Open Sans' }}>
+                                                    {participant.category}
+                                                </TableCell>
+                                            </TableRow>
+                                        ))}
+                                    </TableBody>
+                                </Table>
+                            </TableContainer>
                         ) : (
-                            <ListItem>
-                                <ListItemText primary="No runners yet—be the first to join!" />
-                            </ListItem>
+                            <TableContainer component={Paper} sx={{ borderRadius: 3, boxShadow: '0 8px 24px rgba(0,0,0,0.1)' }}>
+                                <Table>
+                                    <TableHead>
+                                        <TableRow>
+                                            <TableCell sx={{ fontFamily: 'Poppins', fontWeight: 600, color: '#F57C00' }}>
+                                                Name
+                                            </TableCell>
+                                            <TableCell sx={{ fontFamily: 'Poppins', fontWeight: 600, color: '#F57C00', width: '50%' }}>
+                                                Category
+                                            </TableCell>
+                                        </TableRow>
+                                    </TableHead>
+                                    <TableBody>
+                                        <TableRow>
+                                            <TableCell sx={{ fontFamily: 'Open Sans', color: '#2E7D32' }}>
+                                                {timeRemaining.isPast ? 'No runners participated' : 'No runners yet — be the first to join!'}
+                                            </TableCell>
+                                        </TableRow>
+                                    </TableBody>
+                                </Table>
+                            </TableContainer>
                         )}
-                    </List>
-                </Box>
+                    </Box>
+                </motion.div>
             </Container>
         </Box>
     );

@@ -104,7 +104,7 @@ const EventCard = ({ event }) => {
                             gap: 1,
                         }}
                     >
-                        {event.categories && event.categories.length > 1 ? (
+                        {event.categories && event.categories.length > 0 && event.categories[0].id !== null ? (
                             event.categories.map((cat) => (
                                 <Chip
                                     key={cat.id}

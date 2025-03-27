@@ -6,13 +6,41 @@ import { AuthContext } from '../contexts/AuthContext';
 import { getMarathons } from '../api/api';
 import EventCard from '../components/EventCard';
 import LoadingSpinner from '../components/LoadingSpinner';
+import { useNavigate } from 'react-router-dom';
+
+// Utility function to check if the token is valid
+const isTokenValid = (token) => {
+    if (!token) return false;
+    const payload = JSON.parse(atob(token.split('.')[1])); // Decode JWT payload
+    const currentTime = Math.floor(Date.now() / 1000); // Current time in seconds
+    return payload.exp > currentTime; // Check if token is not expired
+};
 
 const Home = () => {
-    const { user } = useContext(AuthContext);
-    console.log(user);
+    const { user, token, logout } = useContext(AuthContext); // Assuming token is available in AuthContext
+    const navigate = useNavigate();
+    const handleLogout = () => {
+        logout();
+        navigate('/login');
+    };
+
+    const isValidToken = isTokenValid(token);
+
     const { data, isLoading, error } = useQuery('marathons', getMarathons, {
-        enabled: !!user,
+        enabled: !!user && isValidToken, // Ensure user exists and token is valid
     });
+
+    if (user && !isValidToken) {
+        return (
+            <Typography align="center" sx={{ mt: 4 }}>
+                Your session has expired. Please log in again.
+            </Typography>
+        );
+    }
+
+    if (user && !isValidToken) {
+        handleLogout();
+    }
 
     if (isLoading) return <LoadingSpinner />;
     if (error) return <Typography color="error" align="center">Error: {error.message}</Typography>;

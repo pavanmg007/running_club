@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-    baseURL: 'https://backend-billowing-river-8784.fly.dev/api', // Adjust to your backend URL
+    baseURL: process.env.REACT_APP_API_BASE_URL || 'http://localhost:5000/api',
 });
 
 export const setAuthToken = (token) => {

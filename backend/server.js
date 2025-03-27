@@ -8,12 +8,15 @@ const adminRoutes = require('./routes/admin');
 const app = express();
 
 app.use(express.json());
-// Enable CORS for frontend origin
+
+const allowedOrigin = process.env.CORS_ORIGIN || 'http://localhost:3000';
+
 app.use(cors({
-  origin: 'https://frontend-polished-thunder-9282.fly.dev', // Allow only this origin
-  credentials: true, // If you plan to use cookies (optional)
-  allowedHeaders: ['Content-Type', 'Authorization'], // Allow headers
+  origin: allowedOrigin,
+  credentials: true,
+  allowedHeaders: ['Content-Type', 'Authorization'],
 }));
+
 app.use((req, res, next) => {
   console.log(`${req.method} ${req.url}`);
   next();

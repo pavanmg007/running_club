@@ -17,7 +17,7 @@ const isTokenValid = (token) => {
 };
 
 const Home = () => {
-    const { user, token, logout } = useContext(AuthContext); // Assuming token is available in AuthContext
+    const { user, token, logout } = useContext(AuthContext);
     const navigate = useNavigate();
     const handleLogout = () => {
         logout();
@@ -27,7 +27,12 @@ const Home = () => {
     const isValidToken = isTokenValid(token);
 
     const { data, isLoading, error } = useQuery('marathons', getMarathons, {
-        enabled: !!user && isValidToken, // Ensure user exists and token is valid
+        enabled: !!user && isValidToken, // Ensure user exists and token is not expired
+        onError: (err) => {
+            if (err.response?.status === 401) {
+                handleLogout();
+            }
+        }
     });
 
     if (user && !isValidToken) {

@@ -1,6 +1,6 @@
 const express = require('express');
 const cors = require('cors');
-const { PORT } = require('./config/env');
+const { PORT, CORS_ORIGIN } = require('./config/env');
 const authRoutes = require('./routes/auth');
 const marathonRoutes = require('./routes/marathons');
 const adminRoutes = require('./routes/admin');
@@ -9,7 +9,7 @@ const app = express();
 
 app.use(express.json());
 
-const allowedOrigin = process.env.CORS_ORIGIN || 'http://localhost:3000';
+const allowedOrigin = CORS_ORIGIN || 'http://localhost:3000';
 console.log('Allowed origin:', allowedOrigin);
 app.use(cors({
   origin: allowedOrigin,

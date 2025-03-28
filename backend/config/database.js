@@ -7,7 +7,7 @@ console.log('caCert', caCert);
 const pool = new Pool({
   connectionString: DATABASE_URL,
   ssl: {
-    rejectUnauthorized: true,
+    rejectUnauthorized: false,
     ca: caCert,
   },
 });

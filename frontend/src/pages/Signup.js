@@ -22,7 +22,7 @@ const Signup = () => {
         setError('');
         try {
             const response = await signup(data);
-            login(response.data.token);
+            login(response.data.token, response.data.user);
             navigate('/');
         } catch (err) {
             setError(err.response?.data?.error || 'Signup failed');

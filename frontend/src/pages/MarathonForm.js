@@ -116,11 +116,13 @@ const MarathonForm = () => {
                         categories: data.data.categories || []
                     }));
                 }
+                window.scrollTo(0, 0);
             },
             onError: (error) => {
                 console.error('Error:', error);
                 setErrorMessage(error.response?.data?.error || 'An error occurred.');
                 setSuccessMessage(null);
+                window.scrollTo(0, 0);
             },
         }
     );

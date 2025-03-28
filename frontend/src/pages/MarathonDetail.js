@@ -529,13 +529,6 @@ const MarathonDetail = () => {
                         )}
                     </Box>
                 </motion.div>
-                {user?.role === 'admin' && (
-                    <Link href={`/admin/marathon/edit/${id}`} sx={{ textDecoration: 'none' }}>
-                        <Button variant="outlined" size="small">
-                            Edit
-                        </Button>
-                    </Link>
-                )}
             </Container>
         </Box>
     );

@@ -14,6 +14,7 @@ import UpdatePassword from './pages/UpdatePassword';
 import MarathonDetail from './pages/MarathonDetail';
 import MarathonForm from './pages/MarathonForm';
 import ProtectedRoute from './components/ProtectedRoute';
+import InviteMembers from './pages/InviteMembers';
 
 const queryClient = new QueryClient();
 
@@ -48,6 +49,9 @@ const App = () => (
                 </ProtectedRoute>
               }
             />
+            <Route path="/admin/invite-members" element={<ProtectedRoute allowedRoles={['admin']}>
+              <InviteMembers />
+            </ProtectedRoute>} />
           </Routes>
         </Router>
       </AuthProvider>

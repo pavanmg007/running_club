@@ -27,19 +27,34 @@ const Navbar = () => {
             {user ? (
                 <>
                     {user.role === 'admin' && (
-                        <ListItem
-                            component={Link}
-                            to="/admin/marathon/add"
-                            onClick={toggleDrawer(false)}
-                            sx={{
-                                color: '#F57C00',
-                                fontFamily: 'Poppins',
-                                fontWeight: 600,
-                                '&:hover': { color: '#E65100' },
-                            }}
-                        >
-                            <ListItemText primary="Add Event" />
-                        </ListItem>
+                        <>
+                            <ListItem
+                                component={Link}
+                                to="/admin/marathon/add"
+                                onClick={toggleDrawer(false)}
+                                sx={{
+                                    color: '#F57C00',
+                                    fontFamily: 'Poppins',
+                                    fontWeight: 600,
+                                    '&:hover': { color: '#E65100' },
+                                }}
+                            >
+                                <ListItemText primary="Add Event" />
+                            </ListItem>
+                            <ListItem
+                                component={Link}
+                                to="/admin/invite-members"
+                                onClick={toggleDrawer(false)}
+                                sx={{
+                                    color: '#F57C00',
+                                    fontFamily: 'Poppins',
+                                    fontWeight: 600,
+                                    '&:hover': { color: '#E65100' },
+                                }}
+                            >
+                                <ListItemText primary="Invite Members" />
+                            </ListItem>
+                        </>
                     )}
                     <ListItem
                         component={Link}
@@ -151,17 +166,30 @@ const Navbar = () => {
                     {user ? (
                         <>
                             {user.role === 'admin' && (
-                                <Button
-                                    component={Link}
-                                    to="/admin/marathon/add"
-                                    sx={{
-                                        color: '#F57C00',
-                                        fontFamily: 'Poppins',
-                                        fontWeight: 600,
-                                        '&:hover': { color: '#E65100' },
-                                    }}>
-                                    Add Event
-                                </Button>
+                                <>
+                                    <Button
+                                        component={Link}
+                                        to="/admin/marathon/add"
+                                        sx={{
+                                            color: '#F57C00',
+                                            fontFamily: 'Poppins',
+                                            fontWeight: 600,
+                                            '&:hover': { color: '#E65100' },
+                                        }}>
+                                        Add Event
+                                    </Button>
+                                    <Button
+                                        component={Link}
+                                        to="/admin/invite-members"
+                                        sx={{
+                                            color: '#F57C00',
+                                            fontFamily: 'Poppins',
+                                            fontWeight: 600,
+                                            '&:hover': { color: '#E65100' },
+                                        }}>
+                                        Invite Members
+                                    </Button>
+                                </>
                             )}
                             <Button
                                 component={Link}

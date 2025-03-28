@@ -27,5 +27,6 @@ export const getParticipants = (id) => api.get(`/marathon/${id}/participants`);
 export const participate = (id, data) => api.post(`/marathon/${id}/participate`, data);
 export const createMarathon = (data) => api.post('admin/marathon', data);
 export const updateMarathon = (id, data) => api.patch(`admin/marathon/${id}`, data);
-
+export const createInvitation = (data) => api.post('admin/invitations', data);
+export const inviteMembers = (data) => api.post('admin/invite-members', data);
 export default api;

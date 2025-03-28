@@ -59,17 +59,32 @@ exports.createMarathon = async (req, res) => {
   }
 
   try {
-    const marathon = await Marathon.create({ name, date, location, registration_link, club_id, is_private });
     if (categories && categories.length > 0) {
+      if (categories.some(c => !c.name || !c.price)) {
+        return res.status(400).json({ error: 'Category name and price are required' });
+      }
+      const validCategoryNames = ['3K Run', '5K Run', '7K Run', '10K Run', '15K Run', 'Half Marathon', 'Full Marathon'];
+      if (categories.some(c => !validCategoryNames.includes(c.name))) {
+        return res.status(400).json({ error: 'Invalid category name', validCategoryNames: validCategoryNames });
+      }
+      const checkCategoryDuplicates = new Set(categories.map(c => c.name));
+      if (checkCategoryDuplicates.size !== categories.length) {
+        return res.status(400).json({ error: 'Category names must be unique' });
+      }
+      const marathon = await Marathon.create({ name, date, location, registration_link, club_id, is_private });
       const categoryQuery = `
         INSERT INTO categories (marathon_id, name, price)
         VALUES ${categories.map((_, i) => `($1, $${i * 2 + 2}, $${i * 2 + 3})`).join(',')}
         RETURNING *;
       `;
       const categoryValues = [marathon.id, ...categories.flatMap(c => [c.name, c.price])];
-      await pool.query(categoryQuery, categoryValues);
+      const { rows } = await pool.query(categoryQuery, categoryValues);
+      marathon.categories = rows;
+      res.status(201).json(marathon);
+    } else {
+      const marathon = await Marathon.create({ name, date, location, registration_link, club_id, is_private });
+      res.status(201).json(marathon);
     }
-    res.status(201).json(marathon);
   } catch (error) {
     console.error('Error creating marathon:', error);
     if (error.code === '23502' && error.column === 'club_id') {
@@ -78,6 +93,54 @@ exports.createMarathon = async (req, res) => {
     res.status(500).json({ error: 'Internal server error' });
   }
 };
+
+exports.updateMarathon = async (req, res) => {
+  console.log('Update marathon request:', req.body, req.params);
+  const marathonId = req.params.id;
+  const { name, date, location, registration_link, categories, is_private } = req.body;
+  const club_id = req.user.club_id;
+  try {
+    const marathon = await Marathon.findById(marathonId);
+    if (!marathon) {
+      return res.status(404).json({ error: `Marathon with ID ${marathonId} not found` });
+    }
+    if (marathon.club_id !== club_id) {
+      return res.status(403).json({ error: 'You do not have permission to update this marathon' });
+    }
+    console.log('Updating marathon:', name, date, location, registration_link, is_private, marathonId);
+    const updatedMarathon = await Marathon.update({ name, date, location, registration_link, is_private, id: marathonId });
+    // Handle category updates
+    if (categories && categories.length > 0) {
+      // Validate category data
+      if (categories.some(c => !c.name || !c.price)) {
+        return res.status(400).json({ error: 'Category name and price are required' });
+      }
+      const validCategoryNames = ['3K Run', '5K Run', '7K Run', '10K Run', '15K Run', 'Half Marathon', 'Full Marathon'];
+      if (categories.some(c => !validCategoryNames.includes(c.name))) {
+        return res.status(400).json({ error: 'Invalid category name', validCategoryNames: validCategoryNames });
+      }
+      const checkCategoryDuplicates = new Set(categories.map(c => c.name));
+      if (checkCategoryDuplicates.size !== categories.length) {
+        return res.status(400).json({ error: 'Category names must be unique' });
+      }
+
+      // Update categories
+      await Marathon.updateCategories(marathonId, categories);
+    } else {
+      // If no categories are provided, delete all existing categories
+      await Marathon.deleteCategories(marathonId);
+    }
+
+    // Fetch updated marathon with categories
+    const updatedMarathonWithCategories = await Marathon.findById(marathonId);
+    updatedMarathonWithCategories.categories = await Marathon.findMarathonCategories(marathonId);
+
+    res.status(200).json(updatedMarathonWithCategories);
+  } catch (error) {
+    console.error('Error updating marathon:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+}
 
 exports.getMarathonParticipants = async (req, res) => {
   const marathonId = req.params.id;
@@ -97,7 +160,7 @@ exports.getMarathonParticipants = async (req, res) => {
   if (marathon.is_private && marathon.club_id !== userClubId) {
     return res.status(403).json({ error: 'This marathon is private; only club members can view participants' });
   }
-  
+
   const query = `
     SELECT m.id as "marathonId", m.name, u.id as "userId", u.name as "userName", c.id as "categoryId", c.name as category
     FROM participations p

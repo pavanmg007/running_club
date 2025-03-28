@@ -7,7 +7,7 @@ const EventCard = ({ event }) => {
     // Event status logic
     const currentDate = new Date();
     const eventDate = new Date(event.date);
-    const isEnded = eventDate < currentDate;
+    const isEnded = eventDate.getTime() < currentDate.getTime() && eventDate.toDateString() !== currentDate.toDateString();
     const isToday = eventDate.toDateString() === currentDate.toDateString();
     const eventStatus = isEnded ? 'Ended' : isToday ? 'Today' : 'Upcoming';
 
@@ -25,7 +25,7 @@ const EventCard = ({ event }) => {
         >
             <Card
                 component={Link}
-                to={`/marathons/${event.id}`}
+                to={`/marathon/${event.id}`}
                 sx={{
                     textDecoration: 'none',
                     borderRadius: '16px',

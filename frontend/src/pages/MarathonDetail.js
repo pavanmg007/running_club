@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useContext, useState, useEffect, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from 'react-query';
 import {
@@ -86,26 +86,27 @@ const MarathonDetail = () => {
         }
     }, [marathonData]);
 
+    // Define hasParticipated with useMemo before any early returns
+    const hasParticipated = useMemo(() => {
+        return (categoryId) => {
+            return participantsData?.data?.allParticipants.some(
+                (participant) => participant.userId === user.id && participant.categoryId === categoryId
+            ) || false;
+        };
+    }, [participantsData, user]);
+
+    // Early returns after all hooks are defined
     if (marathonLoading || participantsLoading) return <LoadingSpinner />;
     if (marathonError) return <Typography color="error" align="center">Error: {marathonError.message}</Typography>;
     if (participantsError) return <Typography color="error" align="center">Error: {participantsError.message}</Typography>;
 
     const marathon = marathonData.data;
-    // marathon.date = '2024-01-01T18:30:00.000Z'
     const categories = marathon.categories || [];
     const participants = participantsData?.data?.allParticipants || [];
 
     const handleParticipate = (categoryId) => {
+        console.log('Participating in category:', categoryId);
         mutation.mutate(categoryId);
-    };
-
-    const hasParticipated = (categoryId) => {
-        console.log('participants:', participants);
-        console.log('user:', user);
-        console.log('categoryId:', categoryId);
-        return participants.some(
-            (participant) => participant.userId === user.id && participant.categoryId === categoryId
-        );
     };
 
     return (
@@ -196,7 +197,6 @@ const MarathonDetail = () => {
                         </Box>
                         {marathon.registration_link && (
                             timeRemaining.isPast ? (
-                                // Render button without Link if race has ended
                                 <Button
                                     variant="outlined"
                                     disabled={true}
@@ -222,7 +222,6 @@ const MarathonDetail = () => {
                                     Register Now
                                 </Button>
                             ) : (
-                                // Render button with Link if race has not ended
                                 <Link
                                     component="a"
                                     href={marathon.registration_link}
@@ -371,7 +370,6 @@ const MarathonDetail = () => {
                                     {categories.length > 0 ? (
                                         categories.map((category) => {
                                             const isParticipated = hasParticipated(category.id);
-                                            console.log('isParticipated:', isParticipated);
                                             return (
                                                 <motion.div
                                                     key={category.id}
@@ -508,6 +506,13 @@ const MarathonDetail = () => {
                         )}
                     </Box>
                 </motion.div>
+                {user?.role === 'admin' && (
+                    <Link href={`/admin/marathon/edit/${id}`} sx={{ textDecoration: 'none' }}>
+                        <Button variant="outlined" size="small">
+                            Edit
+                        </Button>
+                    </Link>
+                )}
             </Container>
         </Box>
     );

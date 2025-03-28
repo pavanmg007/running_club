@@ -21,9 +21,11 @@ export const resetPassword = (data) => api.post('/auth/reset-password', data);
 export const updatePassword = (data) => api.put('/auth/password', data);
 
 // Marathon APIs
-export const getMarathons = () => api.get('/marathons');
-export const getMarathonById = (id) => api.get(`/marathons/${id}`);
-export const getParticipants = (id) => api.get(`/marathons/${id}/participants`);
-export const participate = (id, data) => api.post(`/marathons/${id}/participate`, data);
+export const getMarathons = () => api.get('/marathon');
+export const getMarathonById = (id) => api.get(`/marathon/${id}`);
+export const getParticipants = (id) => api.get(`/marathon/${id}/participants`);
+export const participate = (id, data) => api.post(`/marathon/${id}/participate`, data);
+export const createMarathon = (data) => api.post('admin/marathon', data);
+export const updateMarathon = (id, data) => api.patch(`admin/marathon/${id}`, data);
 
 export default api;

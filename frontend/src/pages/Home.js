@@ -35,13 +35,6 @@ const Home = () => {
         }
     });
 
-    if (user && !isValidToken) {
-        return (
-            <Typography align="center" sx={{ mt: 4 }}>
-                Your session has expired. Please log in again.
-            </Typography>
-        );
-    }
 
     if (user && !isValidToken) {
         handleLogout();

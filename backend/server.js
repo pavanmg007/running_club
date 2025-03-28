@@ -2,7 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const { PORT, CORS_ORIGIN } = require('./config/env');
 const authRoutes = require('./routes/auth');
-const marathonRoutes = require('./routes/marathons');
+const marathonRoutes = require('./routes/marathon');
 const adminRoutes = require('./routes/admin');
 
 const app = express();
@@ -22,7 +22,7 @@ app.use((req, res, next) => {
   next();
 });
 app.use('/api/auth', authRoutes);
-app.use('/api/marathons', marathonRoutes);
+app.use('/api/marathon', marathonRoutes);
 app.use('/api/admin', adminRoutes);
 
 app.listen(PORT, () => {

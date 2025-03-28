@@ -1,5 +1,6 @@
 const { Pool } = require('pg');
 const { DATABASE_URL } = require('./env');
+const fs = require('fs');
 const caCert = fs.readFileSync('./ca.pem').toString(); // Replace './ca.pem' with the actual path to your downloaded certificate
 
 const pool = new Pool({

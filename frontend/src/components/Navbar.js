@@ -26,6 +26,21 @@ const Navbar = () => {
         <List sx={{ width: 250, bgcolor: '#FFF3E0' }}>
             {user ? (
                 <>
+                    {user.role === 'admin' && (
+                        <ListItem
+                            component={Link}
+                            to="/admin/marathon/add"
+                            onClick={toggleDrawer(false)}
+                            sx={{
+                                color: '#F57C00',
+                                fontFamily: 'Poppins',
+                                fontWeight: 600,
+                                '&:hover': { color: '#E65100' },
+                            }}
+                        >
+                            <ListItemText primary="Add Event" />
+                        </ListItem>
+                    )}
                     <ListItem
                         component={Link}
                         to="/update-password"
@@ -135,6 +150,19 @@ const Navbar = () => {
                 <Box sx={{ display: { xs: 'none', sm: 'flex' }, alignItems: 'center', gap: 3 }}>
                     {user ? (
                         <>
+                            {user.role === 'admin' && (
+                                <Button
+                                    component={Link}
+                                    to="/admin/marathon/add"
+                                    sx={{
+                                        color: '#F57C00',
+                                        fontFamily: 'Poppins',
+                                        fontWeight: 600,
+                                        '&:hover': { color: '#E65100' },
+                                    }}>
+                                    Add Event
+                                </Button>
+                            )}
                             <Button
                                 component={Link}
                                 to="/update-password"

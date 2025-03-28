@@ -136,7 +136,7 @@ const MarathonForm = () => {
         <Container maxWidth="sm">
             <Box mt={4}>
                 <Typography variant="h4" align="center" gutterBottom>
-                    {isEditMode ? 'Edit Marathon' : 'Add New Marathon'}
+                    {isEditMode ? 'Edit Event' : 'Add New Event'}
                 </Typography>
                 {successMessage && (
                     <Alert severity="success" onClose={() => setSuccessMessage(null)} sx={{ mb: 2 }}>

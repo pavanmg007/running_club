@@ -17,6 +17,7 @@ import {
     TableHead,
     TableRow,
     Paper,
+    Grid
 } from '@mui/material';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { motion } from 'framer-motion';
@@ -248,6 +249,28 @@ const MarathonDetail = () => {
                                     >
                                         Register Now
                                     </Button>
+                                    {user?.role === 'admin' && (
+                                        <Link href={`/admin/marathon/edit/${id}`} sx={{ textDecoration: 'none' }}>
+                                            <Button variant="outlined"
+                                                sx={{
+                                                    border: '2px solid rgba(255, 255, 255, 0.5)',
+                                                    borderRadius: '8px',
+                                                    color: 'rgba(255, 255, 255, 0.81)',
+                                                    bgcolor: 'transparent',
+                                                    fontFamily: 'Poppins',
+                                                    fontWeight: 600,
+                                                    px: 1.5,
+                                                    py: 0.5,
+                                                    mx: 2,
+                                                    '&:hover': {
+                                                        bgcolor: 'rgba(255, 255, 255, 0.1)',
+                                                        border: '2px solid rgba(255, 255, 255, 0.5)',
+                                                    },
+                                                }}>
+                                                Edit
+                                            </Button>
+                                        </Link>
+                                    )}
                                 </Link>
                             )
                         )}

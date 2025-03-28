@@ -137,7 +137,7 @@ const MarathonForm = () => {
     return (
         <Container maxWidth="sm">
             <Box mt={4}>
-                <Typography variant="h4" align="center" gutterBottom>
+                <Typography variant="h4" align="center" color='secondary' gutterBottom>
                     {isEditMode ? 'Edit Event' : 'Add New Event'}
                 </Typography>
                 {successMessage && (

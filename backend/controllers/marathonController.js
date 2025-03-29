@@ -63,7 +63,7 @@ exports.createMarathon = async (req, res) => {
       if (categories.some(c => !c.name || !c.price)) {
         return res.status(400).json({ error: 'Category name and price are required' });
       }
-      const validCategoryNames = ['3K Run', '5K Run', '7K Run', '10K Run', '15K Run', 'Half Marathon', 'Full Marathon'];
+      const validCategoryNames = ['3K Run', '5K Run', '7K Run', '10K Run', '15K Run', '25K Run', 'Half Marathon', 'Full Marathon'];
       if (categories.some(c => !validCategoryNames.includes(c.name))) {
         return res.status(400).json({ error: 'Invalid category name', validCategoryNames: validCategoryNames });
       }
@@ -115,7 +115,7 @@ exports.updateMarathon = async (req, res) => {
       if (categories.some(c => !c.name || !c.price)) {
         return res.status(400).json({ error: 'Category name and price are required' });
       }
-      const validCategoryNames = ['3K Run', '5K Run', '7K Run', '10K Run', '15K Run', 'Half Marathon', 'Full Marathon'];
+      const validCategoryNames = ['3K Run', '5K Run', '7K Run', '10K Run', '15K Run', '25K Run', 'Half Marathon', 'Full Marathon'];
       if (categories.some(c => !validCategoryNames.includes(c.name))) {
         return res.status(400).json({ error: 'Invalid category name', validCategoryNames: validCategoryNames });
       }

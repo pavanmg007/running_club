@@ -36,7 +36,7 @@ const MarathonForm = () => {
     });
     const [isLoading, setIsLoading] = useState(false);
     const [isEditMode, setIsEditMode] = useState(false);
-    const validCategoryNames = ['3K Run', '5K Run', '7K Run', '10K Run', '15K Run', 'Half Marathon', 'Full Marathon'];
+    const validCategoryNames = ['3K Run', '5K Run', '7K Run', '10K Run', '15K Run', '25K Run', 'Half Marathon', 'Full Marathon'];
     const { token } = useContext(AuthContext);
     const [successMessage, setSuccessMessage] = useState(null);
     const [errorMessage, setErrorMessage] = useState(null);

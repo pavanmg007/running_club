@@ -22,7 +22,7 @@ import {
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { motion } from 'framer-motion';
 import { AuthContext } from '../contexts/AuthContext';
-import { getMarathonById, getParticipants, participate } from '../api/api';
+import { getMarathonById, getParticipants, participate, cancelParticipation } from '../api/api';
 import LoadingSpinner from '../components/LoadingSpinner';
 
 const MarathonDetail = () => {
@@ -42,7 +42,11 @@ const MarathonDetail = () => {
         () => getParticipants(id)
     );
 
-    const mutation = useMutation((categoryId) => participate(id, { category_id: categoryId }), {
+    const participateMutation = useMutation((categoryId) => participate(id, { category_id: categoryId }), {
+        onSuccess: () => queryClient.invalidateQueries(['participants', id]),
+    });
+
+    const cancelParticipationMutation = useMutation((categoryId) => cancelParticipation(id, { category_id: categoryId }), {
         onSuccess: () => queryClient.invalidateQueries(['participants', id]),
     });
 
@@ -89,6 +93,7 @@ const MarathonDetail = () => {
 
     // Define hasParticipated with useMemo before any early returns
     const hasParticipated = useMemo(() => {
+        console.log('memoizing hasParticipated');
         return (categoryId) => {
             return participantsData?.data?.allParticipants.some(
                 (participant) => participant.userId === user.id && participant.categoryId === categoryId
@@ -107,7 +112,12 @@ const MarathonDetail = () => {
 
     const handleParticipate = (categoryId) => {
         console.log('Participating in category:', categoryId);
-        mutation.mutate(categoryId);
+        participateMutation.mutate(categoryId);
+    };
+
+    const handleCancelParticipation = (categoryId) => {
+        console.log('Cancelling participation in category:', categoryId);
+        cancelParticipationMutation.mutate(categoryId);
     };
 
     return (
@@ -401,11 +411,18 @@ const MarathonDetail = () => {
                                                 >
                                                     <Chip
                                                         label={`${category.name}`}
-                                                        onClick={() => !isParticipated && handleParticipate(category.id)}
-                                                        disabled={mutation.isLoading || isParticipated}
+                                                        onClick={() => {
+                                                            if (isParticipated) {
+                                                                handleCancelParticipation(category.id);
+                                                            } else {
+                                                                handleParticipate(category.id);
+                                                            }
+                                                        }}
+                                                        disabled={participateMutation.isLoading || cancelParticipationMutation.isLoading}
                                                         icon={isParticipated ? <CheckCircleIcon color="white" /> : null}
+                                                        onDelete={isParticipated ? () => handleCancelParticipation(category.id) : undefined}
                                                         sx={{
-                                                            bgcolor: isParticipated ? '#4CAF50' : '#2E7D32',
+                                                            bgcolor: isParticipated ? 'primary.main' : '#757575',
                                                             color: 'white',
                                                             fontFamily: 'Poppins',
                                                             fontWeight: 600,
@@ -415,10 +432,11 @@ const MarathonDetail = () => {
                                                             borderRadius: 20,
                                                             '&:hover': {
                                                                 bgcolor: isParticipated ? '#388E3C' : '#1B5E20',
-                                                                cursor: isParticipated ? 'default' : 'pointer',
+                                                                cursor: 'pointer',
                                                             },
                                                         }}
                                                     />
+
                                                 </motion.div>
                                             );
                                         })

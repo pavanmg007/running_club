@@ -15,6 +15,7 @@ import MarathonDetail from './pages/MarathonDetail';
 import MarathonForm from './pages/MarathonForm';
 import ProtectedRoute from './components/ProtectedRoute';
 import InviteMembers from './pages/InviteMembers';
+import Users from './pages/Users';
 
 const queryClient = new QueryClient();
 
@@ -32,6 +33,7 @@ const App = () => (
             <Route path="/reset-password" element={<ResetPassword />} />
             <Route path="/update-password" element={<UpdatePassword />} />
             <Route path="/marathon/:id" element={<MarathonDetail />} />
+            <Route path="/users" element={<Users />} />
             {/* Protected admin routes */}
             <Route
               path="/admin/marathon/add"

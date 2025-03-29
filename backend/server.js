@@ -4,6 +4,7 @@ const { PORT, CORS_ORIGIN, CORS_ORIGIN2 } = require('./config/env');
 const authRoutes = require('./routes/auth');
 const marathonRoutes = require('./routes/marathon');
 const adminRoutes = require('./routes/admin');
+const usersRoutes = require('./routes/users')
 
 const app = express();
 
@@ -33,6 +34,7 @@ app.use((req, res, next) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/marathon', marathonRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/users', usersRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);

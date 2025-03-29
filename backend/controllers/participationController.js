@@ -67,3 +67,19 @@ exports.participate = async (req, res) => {
     res.status(500).json({ error: 'Internal server error' });
   }
 };
+
+exports.unparticipate = async (req, res) => {
+  const marathon_id = req.params.id;
+  const user_id = req.user.id;
+
+  try {
+    const result = await Participation.delete(marathon_id, user_id);
+    if (!result) {
+      return res.status(404).json({ error: 'Participation not found' });
+    }
+    res.json({ message: 'Unparticipated successfully' });
+  } catch (error) {
+    console.error('Error deleting participation:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+}

@@ -293,32 +293,34 @@ const MarathonDetail = () => {
                                     </Button>
 
                                 ) : (
-                                    <Link
-                                        component="a"
-                                        href={marathon.registration_link}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        sx={{ textDecoration: 'none' }}
-                                    >
-                                        <Button
-                                            variant="outlined"
-                                            sx={{
-                                                border: '2px solid white',
-                                                borderRadius: '8px',
-                                                color: '#FFFFFF',
-                                                bgcolor: 'transparent',
-                                                fontFamily: 'Poppins',
-                                                fontWeight: 600,
-                                                px: 1.5,
-                                                py: 0.5,
-                                                '&:hover': {
-                                                    bgcolor: 'rgba(255, 255, 255, 0.1)',
-                                                    border: '2px solid white',
-                                                },
-                                            }}
+                                    <>
+                                        <Link
+                                            component="a"
+                                            href={marathon.registration_link}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            sx={{ textDecoration: 'none' }}
                                         >
-                                            Register Now
-                                        </Button>
+                                            <Button
+                                                variant="outlined"
+                                                sx={{
+                                                    border: '2px solid white',
+                                                    borderRadius: '8px',
+                                                    color: '#FFFFFF',
+                                                    bgcolor: 'transparent',
+                                                    fontFamily: 'Poppins',
+                                                    fontWeight: 600,
+                                                    px: 1.5,
+                                                    py: 0.5,
+                                                    '&:hover': {
+                                                        bgcolor: 'rgba(255, 255, 255, 0.1)',
+                                                        border: '2px solid white',
+                                                    },
+                                                }}
+                                            >
+                                                Register Now
+                                            </Button>
+                                        </Link>
                                         <Button
                                             variant="outlined"
                                             onClick={handleShare}
@@ -363,7 +365,7 @@ const MarathonDetail = () => {
                                                 </Button>
                                             </Link>
                                         )}
-                                    </Link>
+                                    </>
                                 )
                             )}
                         </motion.div>

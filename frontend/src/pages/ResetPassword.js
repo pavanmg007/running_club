@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { resetPassword } from '../api/api';
 import AuthForm from '../components/AuthForm';
+import { Alert } from '@mui/material';
 
 const ResetPassword = () => {
     const [error, setError] = useState('');

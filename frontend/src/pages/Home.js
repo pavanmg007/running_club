@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { useQuery } from 'react-query';
 import { Container, Typography, Box, Grid } from '@mui/material';
 import { motion } from 'framer-motion';
@@ -7,6 +7,7 @@ import { getMarathons } from '../api/api';
 import EventCard from '../components/EventCard';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { useNavigate } from 'react-router-dom';
+import Helmet from '../components/Helmet';
 
 // Utility function to check if the token is valid
 const isTokenValid = (token) => {
@@ -19,32 +20,33 @@ const isTokenValid = (token) => {
 const Home = () => {
     const { user, token, logout } = useContext(AuthContext);
     const navigate = useNavigate();
-    const handleLogout = () => {
-        logout();
-        navigate('/login');
-    };
 
-    const isValidToken = isTokenValid(token);
+    useEffect(() => {
+        if (!isTokenValid(token)) {
+            logout();
+            navigate('/login');
+        }
+    }, [token, logout, navigate]);
 
     const { data, isLoading, error } = useQuery('marathons', getMarathons, {
-        enabled: !!user && isValidToken, // Ensure user exists and token is not expired
+        enabled: !!user && isTokenValid(token),
         onError: (err) => {
             if (err.response?.status === 401) {
-                handleLogout();
+                logout();
+                navigate('/login');
             }
         }
     });
-
-
-    if (user && !isValidToken) {
-        handleLogout();
-    }
 
     if (isLoading) return <LoadingSpinner />;
     if (error) return <Typography color="error" align="center">Error: {error.message}</Typography>;
 
     return (
         <>
+            <Helmet
+                title="Home"
+                description="Discover and join exciting running events with your community. Find upcoming marathons, register for races, and connect with fellow runners."
+            />
             {/* Hero Section */}
             <Box
                 className="hero-gradient"

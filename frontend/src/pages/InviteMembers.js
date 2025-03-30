@@ -30,6 +30,8 @@ const InviteMembers = () => {
     const [singleInviteCodeError, setSingleInviteCodeError] = useState(null);
     const [multipleInviteCodeError, setMultipleInviteCodeError] = useState(null);
 
+    const isValidEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
     const handleSingleInviteSubmit = async (event) => {
         event.preventDefault();
         setLoading(true);
@@ -55,7 +57,13 @@ const InviteMembers = () => {
         setMultipleInviteCodeError(null);
         setMultipleInviteResult(null);
 
-        const emails = multipleInviteEmails.split(',').map((email) => email.trim()).filter(Boolean);
+        const emails = multipleInviteEmails.split(',').map((email) => email.trim()).filter(isValidEmail);
+
+        if (emails.length === 0) {
+            setMultipleInviteCodeError('No valid emails provided');
+            setLoading(false);
+            return;
+        }
 
         try {
             const response = await inviteMembers({ emails });

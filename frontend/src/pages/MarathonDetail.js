@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect, useMemo } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from 'react-query';
 import {
     Container,
@@ -28,10 +28,27 @@ import { getMarathonById, getParticipants, participate, cancelParticipation } fr
 import LoadingSpinner from '../components/LoadingSpinner';
 import Helmet from '../components/Helmet';
 
+const isTokenValid = (token) => {
+    if (!token) return false;
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    const currentTime = Math.floor(Date.now() / 1000);
+    return payload.exp > currentTime;
+};
+
 const MarathonDetail = () => {
     const { id } = useParams();
     const queryClient = useQueryClient();
-    const { user } = useContext(AuthContext);
+    const { user, token, logout } = useContext(AuthContext);
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        if (!isTokenValid(token)) {
+            logout();
+            navigate('/login');
+        }
+    }, [token, logout, navigate]);
+
+
     const [snackbar, setSnackbar] = useState({
         open: false,
         message: '',

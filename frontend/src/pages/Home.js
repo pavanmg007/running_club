@@ -9,27 +9,11 @@ import LoadingSpinner from '../components/LoadingSpinner';
 import { useNavigate } from 'react-router-dom';
 import Helmet from '../components/Helmet';
 
-// Utility function to check if the token is valid
-const isTokenValid = (token) => {
-    if (!token) return false;
-    const payload = JSON.parse(atob(token.split('.')[1])); // Decode JWT payload
-    const currentTime = Math.floor(Date.now() / 1000); // Current time in seconds
-    return payload.exp > currentTime; // Check if token is not expired
-};
-
 const Home = () => {
-    const { user, token, logout } = useContext(AuthContext);
+    const { user, logout } = useContext(AuthContext);
     const navigate = useNavigate();
 
-    useEffect(() => {
-        if (!isTokenValid(token)) {
-            logout();
-            navigate('/login');
-        }
-    }, [token, logout, navigate]);
-
     const { data, isLoading, error } = useQuery('marathons', getMarathons, {
-        enabled: !!user && isTokenValid(token),
         onError: (err) => {
             if (err.response?.status === 401) {
                 logout();
@@ -70,24 +54,18 @@ const Home = () => {
 
             {/* Events Section */}
             <Container sx={{ py: 4 }}>
-                {user ? (
-                    <>
-                        <Typography variant="h5" align="center" py={6} gutterBottom sx={{ color: '#2E7D32' }}>
-                            Upcoming Events
-                        </Typography>
-                        <Grid container spacing={3}>
-                            {data?.data.map((event) => (
-                                <Grid item xs={12} sm={6} md={4} key={event.id}>
-                                    <EventCard event={event} />
-                                </Grid>
-                            ))}
-                        </Grid>
-                    </>
-                ) : (
-                    <Typography align="center" sx={{ mt: 4 }}>
-                        Please log in to view events.
+                <>
+                    <Typography variant="h5" align="center" py={6} gutterBottom sx={{ color: '#2E7D32' }}>
+                        Upcoming Events
                     </Typography>
-                )}
+                    <Grid container spacing={3}>
+                        {data?.data.map((event) => (
+                            <Grid item xs={12} sm={6} md={4} key={event.id}>
+                                <EventCard event={event} />
+                            </Grid>
+                        ))}
+                    </Grid>
+                </>
             </Container>
         </>
     );

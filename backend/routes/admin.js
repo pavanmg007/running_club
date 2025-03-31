@@ -30,6 +30,7 @@ async function sendInviteEmail(email, code, club_id) {
 
 router.post('/marathon', auth, admin, marathonController.createMarathon);
 router.patch('/marathon/:id', auth, admin, marathonController.updateMarathon);
+router.delete('/marathon/:id', auth, admin, marathonController.deleteMarathon);
 
 router.post('/invitations', auth, admin, async (req, res) => {
   const { code, email } = req.body;

@@ -1,5 +1,6 @@
 const pool = require('../config/database');
 const Marathon = require('../models/marathon');
+const Participation = require('../models/participation');
 const Category = require('../models/category');
 
 exports.getAllMarathons = async (req, res) => {
@@ -138,6 +139,45 @@ exports.updateMarathon = async (req, res) => {
     res.status(200).json(updatedMarathonWithCategories);
   } catch (error) {
     console.error('Error updating marathon:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+}
+
+exports.deleteMarathon = async (req, res) => {
+  const marathonId = req.params.id;
+  const club_id = req.user.club_id;
+  try {
+    const marathon = await Marathon.findById(marathonId);
+    if (!marathon) {
+      return res.status(404).json({ error: `Marathon with ID ${marathonId} not found` });
+    }
+    if (marathon.club_id !== club_id) {
+      return res.status(403).json({ error: 'You do not have permission to delete this marathon' });
+    }
+    // check for existing participations
+    const participations = await Participation.getAll(marathonId);
+    if (participations.length > 0) {
+      const deleteParticipations = await Participation.deleteAll(marathonId);
+      if (!deleteParticipations) {
+        return res.status(500).json({ error: 'Error deleting participations' });
+      }
+    }
+    // check for existing categories
+    const categories = await Category.findByMarathonId(marathonId);
+    if (categories.length > 0) {
+      const deleteCategories = await Category.deleteAll(marathonId);
+      if (!deleteCategories) {
+        return res.status(500).json({ error: 'Error deleting categories' });
+      }
+    }
+    // delete marathon
+    const deleteMarathon = await Marathon.delete(marathonId);
+    if (!deleteMarathon) {
+      return res.status(500).json({ error: 'Marathon does not exist or could not be deleted' });
+    }
+    res.status(200).json({ message: 'Marathon deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting marathon:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 }

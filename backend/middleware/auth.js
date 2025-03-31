@@ -3,8 +3,22 @@ const { JWT_SECRET } = require('../config/env');
 
 module.exports = (req, res, next) => {
   const token = req.header('Authorization')?.replace('Bearer ', '');
-  if (!token) return res.status(401).json({ error: 'No token provided' });
 
+  console.log('req.path', req.baseUrl);
+  if (req.baseUrl === '/api/marathon') {
+    if (token) {
+      try {
+        const decoded = jwt.verify(token, JWT_SECRET);
+        req.user = decoded;
+      } catch (error) {
+        req.user = null;
+      }
+    } else {
+      req.user = null;
+    }
+    return next();
+  }
+  if (!token) return res.status(401).json({ error: 'No token provided' });
   try {
     const decoded = jwt.verify(token, JWT_SECRET);
     req.user = decoded; // Should include { id, role, club_id }

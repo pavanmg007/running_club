@@ -18,6 +18,14 @@ import SearchIcon from '@mui/icons-material/Search';
 import { AuthContext } from '../contexts/AuthContext';
 import { users, setAuthToken } from '../api/api';
 import LoadingSpinner from '../components/LoadingSpinner';
+import { useNavigate } from 'react-router-dom';
+
+const isTokenValid = (token) => {
+    if (!token) return false;
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    const currentTime = Math.floor(Date.now() / 1000);
+    return payload.exp > currentTime;
+};
 
 const Users = () => {
     const { token, user, logout } = useContext(AuthContext);
@@ -25,6 +33,12 @@ const Users = () => {
     const [filteredUsers, setFilteredUsers] = useState([]);
     const [loading, setLoading] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
+    const navigate = useNavigate();
+
+    if (!isTokenValid(token)) {
+        logout();
+        navigate('/login');
+    }
 
     useEffect(() => {
         if (!user || !token) {

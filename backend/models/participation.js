@@ -23,6 +23,25 @@ class Participation {
     return rows[0];
   }
 
+  static async getAll(marathon_id) {
+    const query = `
+      SELECT * FROM participations
+      WHERE marathon_id = $1;
+    `;
+    const { rows } = await pool.query(query, [marathon_id]);
+    return rows;
+  }
+
+  static async deleteAll(marathon_id) {
+    const query = `
+      DELETE FROM participations
+      WHERE marathon_id = $1
+      RETURNING *;
+    `;
+    const { rows } = await pool.query(query, [marathon_id]);
+    return rows;
+  }
+
   static async findByMarathonId(marathon_id) {
     const query = `
       SELECT p.*, u.name AS user_name, c.name AS category_name

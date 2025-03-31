@@ -13,11 +13,16 @@ import {
     Checkbox,
     FormControlLabel,
     IconButton,
-    Alert
+    Alert,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogContentText,
+    DialogTitle
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useMutation, useQueryClient } from 'react-query';
-import { createMarathon, updateMarathon, getMarathonById, setAuthToken } from '../api/api';
+import { createMarathon, updateMarathon, getMarathonById, deleteMarathon, setAuthToken } from '../api/api';
 import { useNavigate, useParams } from 'react-router-dom';
 import { AuthContext } from '../contexts/AuthContext';
 import LoadingSpinner from '../components/LoadingSpinner';
@@ -32,7 +37,7 @@ const MarathonForm = () => {
         location: '',
         registration_link: '',
         categories: [],
-        is_private: true
+        is_private: false
     });
     const [isLoading, setIsLoading] = useState(false);
     const [isEditMode, setIsEditMode] = useState(false);
@@ -40,6 +45,8 @@ const MarathonForm = () => {
     const { token } = useContext(AuthContext);
     const [successMessage, setSuccessMessage] = useState(null);
     const [errorMessage, setErrorMessage] = useState(null);
+    // Add this inside the MarathonForm component, with other state declarations
+    const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
     setAuthToken(token);
 
     useEffect(() => {
@@ -126,6 +133,35 @@ const MarathonForm = () => {
             },
         }
     );
+    // Add this after the existing mutation declaration
+    const deleteMutation = useMutation(
+        () => deleteMarathon(id),
+        {
+            onSuccess: () => {
+                queryClient.invalidateQueries('marathons');
+                setSuccessMessage('Marathon deleted successfully!');
+                navigate('/'); // Navigate back to home page
+            },
+            onError: (error) => {
+                setErrorMessage(error.response?.data?.error || 'Failed to delete marathon');
+                setDeleteDialogOpen(false);
+            }
+        }
+    );
+
+    // Add these functions before the return statement
+    const handleDeleteClick = () => {
+        setDeleteDialogOpen(true);
+    };
+
+    const handleDeleteConfirm = () => {
+        deleteMutation.mutate();
+        setDeleteDialogOpen(false);
+    };
+
+    const handleDeleteCancel = () => {
+        setDeleteDialogOpen(false);
+    };
 
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -239,9 +275,48 @@ const MarathonForm = () => {
                         <Button type="submit" variant="contained" color="primary" sx={{ mt: 2 }}>
                             {isEditMode ? 'Update Marathon' : 'Create Marathon'}
                         </Button>
+                        {isEditMode && (
+                            <Button
+                                onClick={handleDeleteClick}
+                                variant="contained"
+                                color="error"
+                                startIcon={<DeleteIcon />}
+                                sx={{ mt: 2 }}
+                            >
+                                Delete Marathon
+                            </Button>
+                        )}
                     </Grid>
                 </form>
             </Box>
+            <Dialog
+                open={deleteDialogOpen}
+                onClose={handleDeleteCancel}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+            >
+                <DialogTitle id="alert-dialog-title">
+                    {"Delete Marathon?"}
+                </DialogTitle>
+                <DialogContent>
+                    <DialogContentText id="alert-dialog-description">
+                        Are you sure you want to delete this marathon? This action cannot be undone.
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleDeleteCancel} color="primary">
+                        Cancel
+                    </Button>
+                    <Button
+                        onClick={handleDeleteConfirm}
+                        color="error"
+                        variant="contained"
+                        autoFocus
+                    >
+                        Delete
+                    </Button>
+                </DialogActions>
+            </Dialog>
         </Container>
     );
 };

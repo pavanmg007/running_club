@@ -27,6 +27,7 @@ import { AuthContext } from '../contexts/AuthContext';
 import { getMarathonById, getParticipants, participate, cancelParticipation } from '../api/api';
 import LoadingSpinner from '../components/LoadingSpinner';
 import Helmet from '../components/Helmet';
+import NotFound from '../components/NotFound';
 
 const isTokenValid = (token) => {
     if (!token) return false;
@@ -58,13 +59,20 @@ const MarathonDetail = () => {
     // Fetch marathon details
     const { data: marathonData, isLoading: marathonLoading, error: marathonError } = useQuery(
         ['marathon', id],
-        () => getMarathonById(id)
+        () => getMarathonById(id),
+        {
+            retry: 2
+        }
     );
 
-    // Fetch participants
+    // Fetch participants if marathon data is available
     const { data: participantsData, isLoading: participantsLoading, error: participantsError } = useQuery(
         ['participants', id],
-        () => getParticipants(id)
+        () => getParticipants(id),
+        {
+            retry: false,
+            enabled: !!marathonData?.data
+        }
     );
 
     const participateMutation = useMutation((categoryId) => participate(id, { category_id: categoryId }), {
@@ -128,6 +136,7 @@ const MarathonDetail = () => {
 
     // Early returns after all hooks are defined
     if (marathonLoading || participantsLoading) return <LoadingSpinner />;
+    if (marathonError || marathonData?.status === 404) return <NotFound />;
     if (marathonError) return <Typography color="error" align="center">Error: {marathonError.message}</Typography>;
     if (participantsError) return <Typography color="error" align="center">Error: {participantsError.message}</Typography>;
 
@@ -338,52 +347,52 @@ const MarathonDetail = () => {
                                                 Register Now
                                             </Button>
                                         </Link>
-                                        <Button
-                                            variant="outlined"
-                                            onClick={handleShare}
-                                            startIcon={<ShareIcon />}
-                                            sx={{
-                                                border: '2px solid white',
-                                                borderRadius: '8px',
-                                                color: '#FFFFFF',
-                                                bgcolor: 'transparent',
-                                                fontFamily: 'Poppins',
-                                                fontWeight: 600,
-                                                px: 1.5,
-                                                py: 0.5,
-                                                ml: 2,
-                                                '&:hover': {
-                                                    bgcolor: 'rgba(255, 255, 255, 0.1)',
-                                                    border: '2px solid white',
-                                                },
-                                            }}
-                                        >
-                                            Share
-                                        </Button>
-                                        {user?.role === 'admin' && (
-                                            <Link href={`/admin/marathon/edit/${id}`} sx={{ textDecoration: 'none' }}>
-                                                <Button variant="outlined"
-                                                    sx={{
-                                                        border: '2px solid rgba(255, 255, 255, 0.5)',
-                                                        borderRadius: '8px',
-                                                        color: 'rgba(255, 255, 255, 0.81)',
-                                                        bgcolor: 'transparent',
-                                                        fontFamily: 'Poppins',
-                                                        fontWeight: 600,
-                                                        px: 1.5,
-                                                        py: 0.5,
-                                                        mx: 2,
-                                                        '&:hover': {
-                                                            bgcolor: 'rgba(255, 255, 255, 0.1)',
-                                                            border: '2px solid rgba(255, 255, 255, 0.5)',
-                                                        },
-                                                    }}>
-                                                    Edit
-                                                </Button>
-                                            </Link>
-                                        )}
                                     </>
                                 )
+                            )}
+                            <Button Button
+                                variant="outlined"
+                                onClick={handleShare}
+                                startIcon={<ShareIcon />}
+                                sx={{
+                                    border: '2px solid white',
+                                    borderRadius: '8px',
+                                    color: '#FFFFFF',
+                                    bgcolor: 'transparent',
+                                    fontFamily: 'Poppins',
+                                    fontWeight: 600,
+                                    px: 1.5,
+                                    py: 0.5,
+                                    ml: 2,
+                                    '&:hover': {
+                                        bgcolor: 'rgba(255, 255, 255, 0.1)',
+                                        border: '2px solid white',
+                                    },
+                                }}
+                            >
+                                Share
+                            </Button>
+                            {user?.role === 'admin' && (
+                                <Link href={`/admin/marathon/edit/${id}`} sx={{ textDecoration: 'none' }}>
+                                    <Button variant="outlined"
+                                        sx={{
+                                            border: '2px solid rgba(255, 255, 255, 0.5)',
+                                            borderRadius: '8px',
+                                            color: 'rgba(255, 255, 255, 0.81)',
+                                            bgcolor: 'transparent',
+                                            fontFamily: 'Poppins',
+                                            fontWeight: 600,
+                                            px: 1.5,
+                                            py: 0.5,
+                                            mx: 2,
+                                            '&:hover': {
+                                                bgcolor: 'rgba(255, 255, 255, 0.1)',
+                                                border: '2px solid rgba(255, 255, 255, 0.5)',
+                                            },
+                                        }}>
+                                        Edit
+                                    </Button>
+                                </Link>
                             )}
                         </motion.div>
                     </Container>

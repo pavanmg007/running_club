@@ -17,6 +17,13 @@ class Category {
     const { rows } = await pool.query(query, [marathon_id]);
     return rows;
   }
+
+  static async deleteAll(marathon_id) {
+    const query = 'DELETE FROM categories WHERE marathon_id = $1 RETURNING *;';
+    await pool.query(query, [marathon_id]);
+    const { rows } = await pool.query(query, [marathon_id]);
+    return rows;
+  }
 }
 
 module.exports = Category;

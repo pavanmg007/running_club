@@ -27,7 +27,7 @@ const Participants = () => {
 
     return (
         <Container>
-            <Typography variant="h4" align="center" color='primary' gutterBottom sx={{ marginTop: '20px'}}>
+            <Typography variant="h4" align="center" color='primary' gutterBottom sx={{ marginTop: '20px' }}>
                 Marathon Participants
             </Typography>
             {marathons.map((marathon, index) => (
@@ -39,15 +39,15 @@ const Participants = () => {
                         <Table>
                             <TableHead>
                                 <TableRow>
-                                    <TableCell sx={{ fontFamily: 'Poppins', fontWeight: 600, color: '#F57C00' }}>Category</TableCell>
-                                    <TableCell sx={{ fontFamily: 'Poppins', fontWeight: 600, color: '#F57C00' }}>Participants</TableCell>
+                                    <TableCell sx={{ fontFamily: 'Poppins', fontWeight: 600, color: '#F57C00', width: '50%' }}>Category</TableCell>
+                                    <TableCell sx={{ fontFamily: 'Poppins', fontWeight: 600, color: '#F57C00', width: '50%' }}>Participants</TableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
                                 {marathon.categories.map((category, catIndex) => (
                                     <TableRow key={catIndex}>
-                                        <TableCell sx={{ fontFamily: 'Open Sans', color: '#2E7D32' }}>{category.category}</TableCell>
-                                        <TableCell>
+                                        <TableCell sx={{ fontFamily: 'Open Sans', color: '#2E7D32', width: '50%' }}>{category.category}</TableCell>
+                                        <TableCell sx={{ width: '50%' }}>
                                             {category.participants.map((participant, partIndex) => (
                                                 <Typography key={partIndex} variant="body2" sx={{ fontFamily: 'Poppins', paddingBottom: '3px' }}>
                                                     {participant.userName}

@@ -32,6 +32,7 @@ export const updatePassword = (data) => api.put('/auth/password', data);
 export const getMarathons = () => api.get('/marathon');
 export const getMarathonById = (id) => api.get(`/marathon/${id}`);
 export const getParticipants = (id) => api.get(`/marathon/${id}/participants`);
+export const getAllMarathonParticipants = () => api.get('/marathon/participants');
 export const participate = (id, data) => api.post(`/marathon/${id}/participate`, data);
 export const cancelParticipation = (id) => api.delete(`/marathon/${id}/participate`);
 export const createMarathon = (data) => api.post('admin/marathon', data);

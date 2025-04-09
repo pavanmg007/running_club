@@ -17,6 +17,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 import InviteMembers from './pages/InviteMembers';
 import Users from './pages/Users';
 import NotFound from './components/NotFound';
+import Participants from './pages/Participants';
 
 const queryClient = new QueryClient();
 
@@ -35,6 +36,7 @@ const App = () => (
             <Route path="/update-password" element={<UpdatePassword />} />
             <Route path="/marathon/:id" element={<MarathonDetail />} />
             <Route path="/users" element={<Users />} />
+            <Route path="/participants" element={<Participants />}/>
             {/* Protected admin routes */}
             <Route
               path="/admin/marathon/add"

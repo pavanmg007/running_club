@@ -235,3 +235,50 @@ exports.getMarathonParticipants = async (req, res) => {
     res.status(500).json({ error: 'Internal server error' });
   }
 };
+
+exports.getAllMarathonParticipants = async (req, res) => {
+  const userClubId = req.user?.club_id;
+  if (!userClubId) {
+    return res.status(403).json({ error: 'Authentication required to view participants' });
+  }
+  try {
+    const query = `
+      SELECT m.id as "marathonId", m.name, u.id as "userId", u.name as "userName", c.id as "categoryId", c.name as category
+      FROM participations p
+      JOIN users u ON p.user_id = u.id
+      JOIN categories c ON p.category_id = c.id
+      JOIN marathons m ON p.marathon_id = m.id
+      WHERE m.club_id = $1;
+    `;
+    const { rows } = await pool.query(query, [userClubId]);
+    if (rows.length === 0) {
+      return res.json({ allParticipants: [] });
+    }
+    let result = [];
+    rows.forEach(row => {
+      let marathon = result.find(m => m.name === row.name);
+      if (!marathon) {
+        marathon = {
+          name: row.name,
+          categories: []
+        };
+        result.push(marathon);
+      }
+      let category = marathon.categories.find(c => c.category === row.category);
+      if (!category) {
+        category = {
+          category: row.category,
+          participants: []
+        };
+        marathon.categories.push(category);
+      }
+      category.participants.push({
+        userName: row.userName
+      });
+    })
+    res.json(result);
+  } catch (error) {
+    console.error('Error fetching participants:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};

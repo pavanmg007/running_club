@@ -5,6 +5,7 @@ const participationController = require('../controllers/participationController'
 const auth = require('../middleware/auth');
 
 router.get('/', auth, marathonController.getAllMarathons);
+router.get('/participants', auth, marathonController.getAllMarathonParticipants);
 router.get('/:id', auth, marathonController.getMarathonById);
 router.get('/:id/participants', auth, marathonController.getMarathonParticipants);
 

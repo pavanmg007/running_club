@@ -71,6 +71,19 @@ const Navbar = () => {
                     </ListItem>
                     <ListItem
                         component={Link}
+                        to="/participants"
+                        onClick={toggleDrawer(false)}
+                        sx={{
+                            color: '#F57C00',
+                            fontFamily: 'Poppins',
+                            fontWeight: 600,
+                            '&:hover': { color: '#E65100' },
+                        }}
+                    >
+                        <ListItemText primary="Participants" />
+                    </ListItem>
+                    <ListItem
+                        component={Link}
                         to="/update-password"
                         onClick={toggleDrawer(false)}
                         sx={{
@@ -215,6 +228,18 @@ const Navbar = () => {
                                 }}
                             >
                                 Club Members
+                            </Button>
+                            <Button
+                                component={Link}
+                                to="/participants"
+                                sx={{
+                                    color: '#F57C00',
+                                    fontFamily: 'Poppins',
+                                    fontWeight: 600,
+                                    '&:hover': { color: '#E65100' },
+                                }}
+                            >
+                                Participants
                             </Button>
                             <Button
                                 component={Link}
